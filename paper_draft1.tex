@@ -82,10 +82,76 @@ Email:\texttt{kenneth.roche@pnnl.gov}}
 
 \section{Examples of 1D AMR}
 \subsection{scalar advection}
-\subsection{linear system (acoustics)}
+We study here the 1D scalar advection equation
+\begin{equation}
+q(x,t)_{t} + \bar{u} q(x,t)_{x}=0
+\end{equation}
+where $\bar{u}$ is a constant representing the velocity of displacement. Let $\bar{u}>0$ for simplicity (right going).
+
 \subsection{variable coefficient (color equation)}
+We study here the 1D scalar problem of the form
+\begin{equation}
+q(x,t)_{t} + u(x) q(x,t)_{x}=0
+\end{equation}
+\noindent where now the velocity is allowed to vary as a function of its position. This is sometimes called the {\it color} equation.
+
 \subsection{nonlinear scalar (Burgers)}
+We study here the 1D systems derived from the conservative, 
+\begin{equation}
+q(x,t)_{t} + f(q(x,t))_{x}=0
+\end{equation}
+which can be cast in non-conservative, quasilinear form 
+ \begin{equation}
+q(x,t)_{t} + f'(q(x,t))q(x,t)_{x}=0 .
+\end{equation}
+In Burgers inviscid equation, $f(q(x,t))=\frac{1}{2}q^2$.
+
+\subsection{linear system (acoustics)}
+We study here the 1D systems of the form
+\begin{equation}
+q(x,t)_{t} + A q(x,t)_{x}=0
+\end{equation}
+\noindent and $A$ satisfies hyperbolicity conditions.
+
 \subsection{nonlinear system (shallow water or acoustics with pressure term)}
+We use the formulation in chapter 13 of \cite{levFVMHP} to describe the shallow water equations.
+So, 
+
+\begin{equation}
+\left( \begin{array}{c}
+h  \\
+h u\end{array} \right)_{t} + 
+\left( \begin{array}{c} 
+hu \\
+hu^2 + \frac{1}{2}gh^2\end{array} \right)_{x} = 0
+\end{equation}
+
+\noindent where $h$ is the height (or depth) of the fluid, $u$ is the horizontal component of the velocity, and $hu$ is the discharge -i.e. the flow rate of the fluid past a point. One can assign the state variables $(q^1,q^2)$, and the flux $f$ as follows: 
+
+\begin{equation}
+q(x,t)=\left( \begin{array}{c}
+h  \\
+h u\end{array} \right)_{t} 
+=
+\begin{equation}
+\left( \begin{array}{c}
+q^1  \\
+q^2\end{array} \right) 
+\end{equation}
+\noindent and
+
+\begin{equation}
+f(q(x,t))=
+\left( \begin{array}{c} 
+hu \\
+hu^2 + \frac{1}{2}gh^2\end{array} \right)
+= 
+\left( \begin{array}{c} 
+q^2 \\
+(q^2)^2 / q^1 + \frac{1}{2}g (q^1)^2\end{array} \right)
+\end{equation}
+\noindent to be consistent with state notation from previous sections of this report.
+
 
 \section{Results}
 \subsection{Numerical experiments for the 1D cases}
@@ -118,5 +184,16 @@ Email:\texttt{kenneth.roche@pnnl.gov}}
 %
 %\end{itemize}
 
+\begin{thebibliography}{9}
+\bibitem{levFVMHP}  
+  R.~Leveque
+Finite Volume Methods for Hyperbolic Problems
+ Cambridge University Press (2002)  \\
+
+\bibitem{CCS:staff}
+ S.~Carter, N.~Rao,
+ Private Communication.
+
+\end{thebibliography}
 
 \end{document}
