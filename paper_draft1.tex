@@ -48,7 +48,7 @@
 \begin{document}
 
 %\begin{center}
-\title{\bf Adaptive Mesh Refinement for Hyperbolic PDE}
+\title{\bf Adaptive Mesh Refinement for 1-D Hyperbolic PDE}
 \author{}
 \maketitle
 %\end{center}
@@ -58,7 +58,21 @@
 
 \section{Outline}
 \begin{itemize}
-\item 
+\item Overview of paper
+\begin{itemize}
+\item Description of AMR, Figure 2.1 from Berger-Leveque paper.
+\item Wave propagation form for 1-d equations. Updating on grid interfaces, section 4 of paper
+\item pseudo-code for algorithm, similar to that on page 2310 of paper.
+\item notes on: flagging cells, boundary conditions
+\end{itemize}
+\item Examples:
+\begin{itemize}
+\item scalar advection
+\item linear system (e.g. Acoustics)
+\item variable coefficient (e.g. Color equation)
+\item nonlinear scalar (burgers)
+\item nonlinear system (shallow water or acoustics with pressure term)
+\end{itemize}
 
 
 \end{itemize}
