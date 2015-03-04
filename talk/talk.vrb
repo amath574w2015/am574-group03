@@ -1,0 +1,11 @@
+
+% for source code reference if needed -still not happy with this yet but we have time ...
+\frametitle{Source code}
+
+\begin{lstlisting}[caption=First C example]
+int main()
+{
+    printf("Hello World!");
+    return 0;
+}
+\end{lstlisting}
