@@ -48,34 +48,73 @@
 \begin{document}
 
 %\begin{center}
-\title{\bf Adaptive Mesh Refinement for 1-D Hyperbolic PDE}
-\author{}
+\title{\bf Adaptive Mesh Refinement for 1-D Hyperbolic PDEs}
+\author{ 
+Saumya Sinha\footnote{Department of Applied Mathematics, University of Washington, Seattle, Washington
+U.S.A.
+Email:\texttt{saumya@uw.edu}},
+Kenneth J. Roche\footnote{
+High Performance Computing Group, 
+Pacific Northwest National Laboratory,
+1 Battelle Road,
+Richland, Washington 
+U.S.A. 
+Email:\texttt{kenneth.roche@pnnl.gov}} 
+}
 \maketitle
 %\end{center}
 
 
 {\bf \abstractname{:}} {\small}
 
-\section{Outline}
-\begin{itemize}
-\item Overview of paper
-\begin{itemize}
-\item Description of AMR, Figure 2.1 from Berger-Leveque paper.
-\item Wave propagation form for 1-d equations. Updating on grid interfaces, section 4 of paper
-\item pseudo-code for algorithm, similar to that on page 2310 of paper.
-\item notes on: flagging cells, boundary conditions
-\end{itemize}
-\item Examples:
-\begin{itemize}
-\item scalar advection
-\item linear system (e.g. Acoustics)
-\item variable coefficient (e.g. Color equation)
-\item nonlinear scalar (burgers)
-\item nonlinear system (shallow water or acoustics with pressure term)
-\end{itemize}
+\newpage
+\tableofcontents
+\listoffigures
+\listoftables
+\newpage
 
+\section{Overview of Paper}
+\subsection{Description of AMR (Fig 2.1 from Berger-Leveque)}
+\subsection{Wave-propagation for 1D equations -updating grid interfaces (section 4 of paper)}
+\subsection{Pseudo-code for AMR}
+\subsection{Comment on determining refinement - error estimation}
+\subsection{Notes on flagging cells, boundary conditions}
 
-\end{itemize}
+\section{Examples of 1D AMR}
+\subsection{scalar advection}
+\subsection{linear system (acoustics)}
+\subsection{variable coefficient (color equation)}
+\subsection{nonlinear scalar (Burgers)}
+\subsection{nonlinear system (shallow water or acoustics with pressure term)}
+
+\section{Results}
+\subsection{Numerical experiments for the 1D cases}
+\subsection{Software implementation}
+
+\section{Summary}
+
+%\section{Outline}
+%\begin{itemize}
+%\item Overview of paper
+%\begin{itemize}
+%\item Description of AMR, Figure 2.1 from Berger-Leveque paper.
+%\item Wave propagation form for 1-d equations. Updating on grid interfaces, section 4 of paper
+%\item pseudo-code for algorithm, similar to that on page 2310 of paper.
+%\item comment on error estimation -determining refinement
+%\item notes on: flagging cells, boundary conditions
+%\end{itemize}
+%\item Examples of 1D AMR
+%\begin{itemize}
+%\item scalar advection
+%\item linear system (e.g. Acoustics)
+%\item variable coefficient (e.g. Color equation)
+%\item nonlinear scalar (burgers)
+%\item nonlinear system (shallow water or acoustics with pressure term)
+%\end{itemize}
+%\item Results of Numerical Experiments for the 1D cases
+%\item Software 
+%
+%\end{itemize}
 
 
 \end{document}
