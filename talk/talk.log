@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.11.5)  3 MAR 2015 21:49
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.11.5)  3 MAR 2015 22:23
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -902,12 +902,12 @@ LaTeX Font Warning: Font shape `OT1/cmss/m/n' in size <4> not available
 >] [3
 
 ]
-<corrected-titan-4cmp-abm-cpu-gpu.png, id=105, 791.95876pt x 149.55875pt>
+<corrected-titan-4cmp-abm-cpu-gpu.png, id=106, 791.95876pt x 149.55875pt>
 File: corrected-titan-4cmp-abm-cpu-gpu.png Graphic file (type png)
 
 <use corrected-titan-4cmp-abm-cpu-gpu.png>
 Package pdftex.def Info: corrected-titan-4cmp-abm-cpu-gpu.png used on input lin
-e 56.
+e 62.
 (pdftex.def)             Requested size: 284.52489pt x 71.13242pt.
  [4
 
@@ -930,7 +930,7 @@ l.5 \begin{lstlisting}
                       [caption=First C example]
 ? 
 
-./talk.vrb:11: LaTeX Error: \begin{beamer@framepauses} on input line 86 ended b
+./talk.vrb:11: LaTeX Error: \begin{beamer@framepauses} on input line 92 ended b
 y \end{lstlisting}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
@@ -952,11 +952,11 @@ l.11 \end{lstlisting}
 \tf@snm=\write8
 \openout8 = `talk.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 88.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 88.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 94.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 94.
  (./talk.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 88.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 88.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 94.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 94.
 Package rerunfilecheck Info: File `talk.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
@@ -964,13 +964,13 @@ Package rerunfilecheck Info: File `talk.out' has not changed.
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 88.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 94.
  ) 
 Here is how much of TeX's memory you used:
- 15550 strings out of 493488
- 291676 string characters out of 3141347
- 359255 words of memory out of 3000000
- 18473 multiletter control sequences out of 15000+200000
+ 15553 strings out of 493488
+ 291729 string characters out of 3141347
+ 360282 words of memory out of 3000000
+ 18475 multiletter control sequences out of 15000+200000
  11560 words of font info for 43 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
  49i,14n,53p,438b,545s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -981,10 +981,10 @@ usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></us
 r/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmss9.pfb></usr/
 local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb></usr/
 local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on talk.pdf (7 pages, 96557 bytes).
+Output written on talk.pdf (7 pages, 97621 bytes).
 PDF statistics:
- 237 PDF objects out of 1000 (max. 8388607)
- 208 compressed objects within 3 object streams
- 16 named destinations out of 1000 (max. 500000)
+ 238 PDF objects out of 1000 (max. 8388607)
+ 209 compressed objects within 3 object streams
+ 17 named destinations out of 1000 (max. 500000)
  48 words of extra memory for PDF output out of 10000 (max. 10000000)
 
