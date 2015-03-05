@@ -77,9 +77,35 @@ Email:\texttt{kenneth.roche@pnnl.gov}}
 \subsection{Description of AMR (Fig 2.1 from Berger-Leveque)}
 An adaptive mesh refinement strategy that uses rectangular patches over Cartesian grids to refine both space and time coordinates is useful for modeling and tracking regions where the solutions are not smooth such as exhibited around shocks. 
 
-The idea behind the refinement step comes from first determining where a refinement may be useful. 
+The idea behind the refinement step comes from first determining where a refinement may be useful. See section \ref{whentorefine} for details.  Examine figure \ref{fig21}.
+We need to explain how to preserve conservation of flux at grid interfaces. There are essentially three cases to consider: coarse cell to coarse cell, fine cell to fine cell, and coarse cell to fine cell. Let $F_i$ be the flux at the left edge of coarse cell $i$. This is different than what we typically wrote in class, $F_{i-\frac{1}{2}}$, for convenience. Thus, updating between coarse grid cells is simply:
+\begin{equation}
+q_{i}^{1} = q_{i}^{0} - \frac{k}{h} (F_{i+1}^{0} - F_{i}^{0}) 
+\end{equation}
+\noindent where $h,k$ are the space and time lattice spacing respectively.
 
-We will examine figure \ref{fig21}:
+In regions that contain $m$ adjacent single level refined cells let the lattice spacing be denoted by $\hat{h},\hat{k}$ respectively.
+We have $\forall i=1,m$
+\begin{equation}
+\begin{array}{c}
+\hat{q}_{i}^{1} = \hat{q}_{i}^{0} - \frac{\hat{k}}{\hat{h}} (\hat{F}_{i+1}^{0} - \hat{F}_{i}^{0}) \\
+\hat{q}_{i}^{2} = \hat{q}_{i}^{1} - \frac{\hat{k}}{\hat{h}} (\hat{F}_{i+1}^{1} - \hat{F}_{i}^{1}) 
+\end{array}
+\end{equation}
+\noindent in the refined cells where we assume each refinement is $2X$.
+
+In regions where the coarse and fine grids overlap, care must be taken. Two ghost cells are introduced, $\hat{q}_{m+1},\hat{q}_{m+2}$. The values in these 
+cells are decided by interpolating the coarse values  $q_{i}^{0}, q_{i}^{1}$. At the final time (completed time step)  $q_{i}^{1}$ is replaced by the average of the 
+fine grid values in the overlapped region:
+\begin{equation}
+q_{j-1}^{1} = \frac{1}{2} (\hat{q}_{m+1}^{2}+\hat{q}_{m+2}^{2})
+\end{equation}
+\noindent and the corresponding left edge flux is similarly modified so that $q_{i}^{1}$ is finally modified as:
+\begin{equation}
+q_{i}^{1} \rightarrow q_{i}^{1} + \frac{k}{h} ( \frac{1}{2}(\hat{F}_{m+1}^{0} - \hat{F}_{m+1}^{1}) - F_{i}^{0}) \, .
+\end{equation}
+ 
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=.65\textwidth]{berg-lev-fig21}
@@ -90,7 +116,7 @@ We will examine figure \ref{fig21}:
  
 \subsection{Wave-propagation for 1D equations -updating grid interfaces (section 4 of paper)}
 \subsection{Pseudo-code for AMR}
-\subsection{Comment on determining refinement - error estimation}
+\subsection{Comment on determining refinement - error estimation}\label{whentorefine}
 If the solution $q(x,t)$ is smooth enough, assume that our difference method $D$ has order of accuracy $s$ in both 
 space and time, then the local truncation error is $q(x,t+k) -D q(x,t) = \tau(x,t) + k O(k^{s+1}+h^{s+1}))$ where $\tau$ is the leading error.
 Taking two time steps suggests $q(x,t+2k) -D^2 q(x,t) = 2\tau(x,t) + k O(k^{s+1}+h^{s+1}))$.
@@ -100,7 +126,7 @@ Now, suppose we consider coarsening our grid to have space and time widths $2h$,
 \frac{D^2 q(x,t) - D_{2h} q(x,t)}{2^{s+1}-2} = \tau(x,t) + O(h^{s+2})
 \end{equation}
 
-This procedure is easily implemented in AMR. The values on a grid at a given level are projected, i.e. Richardson extrapolation, onto a virtual grid coarsened by a factor of two in each direction. The solution on both grids is advanced in time: the original grid for two time steps, the coarsened grid for one step using a time step twice as large. The difference between the solutions obtained on the two grids at each point is proportional to the local truncation error at that point. At coarse cells where the difference between the two sets of values exceed some tolerance, all four cells contained in the real grid are flagged as requiring refinement. One disadvantage of this procedure is that it always predicts a large error in the neighborhood of captured discontinuities. It is easy to construct examples for which the procedure outlined above will give values on the coarsened grid which differ pointwise by an amount independent of the mesh spacing in the neighborhood of a shock. In general, this leads to refinement of the mesh at all discontinuities with strength greater than some minimum. See \cite{berg-coll} for more details.
+Thus, the values on a grid at a given level are projected, i.e. Richardson extrapolation, onto a virtual grid coarsened by a factor of two in each direction. The solutions on both grids are advanced in time: the original grid for two time steps, the coarsened grid for one step using a time step twice as large. The difference between the solutions obtained on the two grids at each point is proportional to the local truncation error at that point. At coarse cells where the difference between the two sets of values exceed some tolerance, all four cells contained in the real grid are flagged as requiring refinement. One disadvantage of this procedure is that it always predicts a large error in the neighborhood of captured discontinuities. It is easy to construct examples for which the procedure outlined above will give values on the coarsened grid which differ pointwise by an amount independent of the mesh spacing in the neighborhood of a shock. See \cite{berg-coll} for more details. A buffer zone around the flagged cells is added to track features of interest in the refined region. This buffer zone must be affiliated with the number of time steps evaluated at a particular level. If a patch at level $L$ is refined by even integer $R_L$, then the time-step is equally refined implying that $R_L$ steps must be taken on the refined grid at level $L+1$ for each step on grid at level $L$. 
 
 \subsection{Note on boundary conditions}
 
