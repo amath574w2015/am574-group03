@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[12pt,leqno]{article}
 
 %\usepackage{comment}
 \usepackage{amsfonts}
@@ -65,7 +65,7 @@ Email:\texttt{kenneth.roche@pnnl.gov}}
 %\end{center}
 
 
-{\bf \abstractname{:}} {\small}
+{\bf \abstractname{: In this paper we describe an adaptive mesh refinement algorithm that extends high resolution wave-progpagation techniques to hyperbolic systems in non-conservative form. The method for keeping numerical conservation at grid cell interfaces is described. The algorithm was (will be) tested for simple 1D scalar linear and non-linear problems, and to some simple systems. Results will be compared to static mesh solutions for the same problems computed with Clawpack\cite{claw}.}} {\small}
 
 \newpage
 \tableofcontents
@@ -75,18 +75,53 @@ Email:\texttt{kenneth.roche@pnnl.gov}}
 
 \section{Overview of Paper}
 \subsection{Description of AMR (Fig 2.1 from Berger-Leveque)}
+An adaptive mesh refinement strategy that uses rectangular patches over Cartesian grids to refine both space and time coordinates is useful for modeling and tracking regions where the solutions are not smooth such as exhibited around shocks. 
+
+The idea behind the refinement step comes from first determining where a refinement may be useful. 
+
+We will examine figure \ref{fig21}:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.65\textwidth]{berg-lev-fig21}
+    \caption{essential figure for adapting cartesian grids}
+    \label{fig21}
+\end{figure}
+ 
+ 
 \subsection{Wave-propagation for 1D equations -updating grid interfaces (section 4 of paper)}
 \subsection{Pseudo-code for AMR}
 \subsection{Comment on determining refinement - error estimation}
-\subsection{Notes on flagging cells, boundary conditions}
+If the solution $q(x,t)$ is smooth enough, assume that our difference method $D$ has order of accuracy $s$ in both 
+space and time, then the local truncation error is $q(x,t+k) -D q(x,t) = \tau(x,t) + k O(k^{s+1}+h^{s+1}))$ where $\tau$ is the leading error.
+Taking two time steps suggests $q(x,t+2k) -D^2 q(x,t) = 2\tau(x,t) + k O(k^{s+1}+h^{s+1}))$.
+Now, suppose we consider coarsening our grid to have space and time widths $2h$, $2k$ respectively. Let the differencing scheme be called $D_{2h}$ in this case. The local truncation error in this case reads $q(x,t+2k) -D_{2h} q(x,t) = 2^{s+1}\tau(x,t) + O(h^{s+2})$. Thus, an error growth estimate at time $t$ can be formed by taking the difference in the error present taking two steps with the regular integration scheme, and a single large step using every other grid point:
+
+\begin{equation}
+\frac{D^2 q(x,t) - D_{2h} q(x,t)}{2^{s+1}-2} = \tau(x,t) + O(h^{s+2})
+\end{equation}
+
+This procedure is easily implemented in AMR. The values on a grid at a given level are projected onto a virtual grid coarsened by a factor of two in each direction. The solution on both grids is advanced in time: the original grid for two time steps, the coarsened grid for one step using a time step twice as large. The difference between the solutions obtained on the two grids at each point is proportional to the local truncation error at that point. At coarse cells where the difference between the two sets of values exceed some tolerance, all four cells contained in the real grid are flagged as requiring refinement. One disadvantage of this procedure is that it always predicts a large error in the neighborhood of captured discontinuities. It is easy to construct examples for which the procedure outlined above will give values on the coarsened grid which differ pointwise by an amount independent of the mesh spacing in the neighborhood of a shock. In general, this leads to refinement of the mesh at all discontinuities with strength greater than some minimum. See \cite{berg-coll} for more details.
+
+\subsection{Note on boundary conditions}
 
 \section{Examples of 1D AMR}
 \subsection{scalar advection}
-We study here the 1D scalar advection equation
+The simplest problem (and most boring) is the 1D scalar advection equation
 \begin{equation}
 q(x,t)_{t} + \bar{u} q(x,t)_{x}=0
 \end{equation}
 where $\bar{u}$ is a constant representing the velocity of displacement. Let $\bar{u}>0$ for simplicity (right going).
+The Riemann problem in this case consists of adding the initial conditions:
+\begin{equation}
+q(x,0):= \phi(x)=
+\left\{ \begin{array}{c}
+q_l , \, \, \, \, x<0\\
+q_r , \, \, \, \, x>0\end{array}\right 
+\end{equation}
+\noindent Here the coefficient matrix is the number $\bar{u}$ which has eigenvalue $\lambda^1 = \bar{u}$ and eigenvector $r^1 =1$ and the jump discontinuity determined by $q_r - q_l$ propagates with speed $\lambda^1$ along characteristics. The solution is 
+\begin{equation}
+q(x,t):= \phi(x-\lambda^1 t) \, .
+\end{equation}
 
 \subsection{variable coefficient (color equation)}
 We study here the 1D scalar problem of the form
@@ -186,14 +221,25 @@ q^2 \\
 %\end{itemize}
 
 \begin{thebibliography}{9}
+\bibitem{claw}
+http://www.clawpack.org\\
+
 \bibitem{levFVMHP}  
   R.~Leveque
 Finite Volume Methods for Hyperbolic Problems
  Cambridge University Press (2002)  \\
 
-\bibitem{CCS:staff}
- S.~Carter, N.~Rao,
- Private Communication.
+\bibitem{berg-coll}
+M.~Berger and P.~Collela, Local Adaptive Mesh Refinement for Shock Hydrodynamics
+Journal of Computational Physics 82, 64-84 (1989)\\
+
+\bibitem{Berger1998}
+M.~Berger and R.~Leveque, Adaptive Mesh Refinement Using Wave-Propagation Algorithms for Hyperbolic Systems
+SIAM Journal of Numerical Analysis, 35(6):2298--2316, (1998)\\
+
+\bibitem{Berger1982}
+M.~Berger, Adaptive Mesh Refinement for Hyperbolic Partial Differential Equations,
+ {\em PhD Thesis}, Department of Computer Science, Stanford University, Stanford, CA 94305 (1982)\\
 
 \end{thebibliography}
 
