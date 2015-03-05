@@ -100,7 +100,7 @@ Now, suppose we consider coarsening our grid to have space and time widths $2h$,
 \frac{D^2 q(x,t) - D_{2h} q(x,t)}{2^{s+1}-2} = \tau(x,t) + O(h^{s+2})
 \end{equation}
 
-This procedure is easily implemented in AMR. The values on a grid at a given level are projected onto a virtual grid coarsened by a factor of two in each direction. The solution on both grids is advanced in time: the original grid for two time steps, the coarsened grid for one step using a time step twice as large. The difference between the solutions obtained on the two grids at each point is proportional to the local truncation error at that point. At coarse cells where the difference between the two sets of values exceed some tolerance, all four cells contained in the real grid are flagged as requiring refinement. One disadvantage of this procedure is that it always predicts a large error in the neighborhood of captured discontinuities. It is easy to construct examples for which the procedure outlined above will give values on the coarsened grid which differ pointwise by an amount independent of the mesh spacing in the neighborhood of a shock. In general, this leads to refinement of the mesh at all discontinuities with strength greater than some minimum. See \cite{berg-coll} for more details.
+This procedure is easily implemented in AMR. The values on a grid at a given level are projected, i.e. Richardson extrapolation, onto a virtual grid coarsened by a factor of two in each direction. The solution on both grids is advanced in time: the original grid for two time steps, the coarsened grid for one step using a time step twice as large. The difference between the solutions obtained on the two grids at each point is proportional to the local truncation error at that point. At coarse cells where the difference between the two sets of values exceed some tolerance, all four cells contained in the real grid are flagged as requiring refinement. One disadvantage of this procedure is that it always predicts a large error in the neighborhood of captured discontinuities. It is easy to construct examples for which the procedure outlined above will give values on the coarsened grid which differ pointwise by an amount independent of the mesh spacing in the neighborhood of a shock. In general, this leads to refinement of the mesh at all discontinuities with strength greater than some minimum. See \cite{berg-coll} for more details.
 
 \subsection{Note on boundary conditions}
 
@@ -189,11 +189,17 @@ q^2 \\
 
 
 \section{Results}
-\subsection{Numerical experiments for the 1D cases}
-\subsection{AMR versus fixed mesh Riemann solvers}
 \subsection{Software implementation}
+Clawpack was used to generate numerical Riemann solutions to our test problems for the fixed mesh case.
+We utilized (Python, Matlab, C) for our AMR implementations.
+Please find our software here: (need software + examples ...) and use the \texttt{Readme.txt} file there 
+to build and test the software. The test cases presented in this report are reproduced there.
+\subsection{Results of the Numerical experiments for the 1D cases}
 
 \section{Summary}
+In this paper we described the adaptive mesh refinement algorithm presented in \cite{Berger1998}, and tested the 
+algorithm for several simplistic 1D cases. Our results were compared against those from Clawpack. Our AMR 
+implementations are available to anyone who wants them.
 
 %kr -just let the TOC do the outline for us and track our changes at compile time 
 %also, I added a couple of bullets since our discussion this afternoon
