@@ -1,4 +1,4 @@
-\documentclass[12pt,leqno]{article}
+\documentclass[11pt,leqno]{article}
 
 %\usepackage{comment}
 \usepackage{amsfonts}
@@ -65,7 +65,7 @@ Email:\texttt{kenneth.roche@pnnl.gov}}
 %\end{center}
 
 
-{\bf \abstractname{: In this paper we describe an adaptive mesh refinement algorithm that extends high resolution wave-progpagation techniques to hyperbolic systems in non-conservative form. The method for keeping numerical conservation at grid cell interfaces is described. The algorithm was (will be) tested for simple 1D scalar linear and non-linear problems, and to some simple systems. Results will be compared to static mesh solutions for the same problems computed with Clawpack\cite{claw}.}} {\small}
+{\small {\bf \abstractname}{: In this paper we describe an adaptive mesh refinement algorithm that extends high resolution wave-progpagation techniques to hyperbolic systems in non-conservative form. The method for keeping numerical conservation at grid cell interfaces is described. The algorithm was (will be) tested for simple 1D scalar linear and non-linear problems, and to some simple systems. Results will be compared to static mesh solutions for the same problems computed with Clawpack\cite{claw}.}}
 
 \newpage
 \tableofcontents
@@ -109,12 +109,12 @@ q_{i}^{1} \rightarrow q_{i}^{1} + \frac{k}{h} ( \frac{1}{2}(\hat{F}_{m+1}^{0} - 
 
 
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=.65\textwidth]{berg-lev-fig21}
-    \caption{Essential figure for flux adapting Cartesian grids. The top grid is the normal coarse grid we are used to using with fluxes indicated. The middle diagram shows the case where a fine grid overlays a coarse grid and the interface region of fine and coarse grids. Recall that $2\hat{h}=h$ and $2\hat{k}=k$. The bottom diagram depicts the ghost cell region imposed on the coarse cell interface as well as the fine grid fluxes needed to bridge the interface.}
-    \label{fig21}
-\end{figure}
+%\begin{figure}[h]
+   % \centering
+    %\includegraphics[width=.65\textwidth]{berg-lev-fig21}
+   % \caption{Essential figure for flux adapting Cartesian grids. The top grid is the normal coarse grid we are used to using with fluxes indicated. The middle diagram shows the case where a fine grid overlays a coarse grid and the interface region of fine and coarse grids. Recall that $2\hat{h}=h$ and $2\hat{k}=k$. The bottom diagram depicts the ghost cell region imposed on the coarse cell interface as well as the fine grid fluxes needed to bridge the interface.}
+    %\label{fig21}
+%\end{figure}
  
  
 \subsection{Updating grid interfaces with wave propagation}
@@ -127,7 +127,8 @@ Whether conservative or non-conservative systems are treated, second-order corre
 However, the first-order upwind terms written in terms of the fluctuations must be handled differently.
 
 To maintain conservation we must {\it first} solve the Riemann problem between the ghost cell value $\hat{q}_{m+1}^{0}$ on the fine grid and the coarse grid value $q_{j}^{0}$, and add to the coarse cell value $q_{j}^{1}$ the resulting total fluctuation $A^{-}\Delta q + A^{+}\Delta q$ weighted by $\hat{k}/h = 1/2$ since the time step is $\hat{k}$ while the cell size is $h$. 
-{\it Second} we must also solve a Riemann problem on the fine grid between $\hat{q}_{m+1}^{1}$ and $q_{j}^{0}$and add these fluctuations into $q_{j}^{1}$. 
+{\it Second} we must also solve a Riemann problem on the fine grid between $\hat{q}_{m+1}^{1}$ and $q_{j}^{0}$
+and add these fluctuations into $q_{j}^{1}$. 
 
 The correction step extends to an arbitrary hyperbolic system where we use a Riemann solver to obtain $A^{-}\Delta q$ and  $A^{+}\Delta q$ from the two states $\hat{q}_{m+1}^{0}$ and $q_{j}^{0}$.  This step is made in each of the $R$ time steps on the refined grid within the single coarse-grid step, where $R$ is the refinement ratio. \\
 
@@ -164,8 +165,9 @@ The Riemann problem in this case consists of adding the initial conditions:
 q(x,0):= \phi(x)=
 \left\{ \begin{array}{c}
 q_l , \, \, \, \, x<0\\
-q_r , \, \, \, \, x>0\end{array}\right 
+q_r , \, \, \, \, x>0\end{array}\right. 
 \end{equation}
+
 \noindent Here the coefficient matrix is the number $\bar{u}$ which has eigenvalue $\lambda^1 = \bar{u}$ and eigenvector $r^1 =1$ and the jump discontinuity determined by $q_r - q_l$ propagates with speed $\lambda^1$ along characteristics. The solution is 
 \begin{equation}
 q(x,t):= \phi(x-\lambda^1 t) \, .
@@ -216,7 +218,6 @@ q(x,t)=\left( \begin{array}{c}
 h  \\
 h u\end{array} \right)
 =
-\begin{equation}
 \left( \begin{array}{c}
 q^1  \\
 q^2\end{array} \right) 
