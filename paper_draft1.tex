@@ -103,18 +103,18 @@ q_{j-1}^{1} = \frac{1}{2} (\hat{q}_{m+1}^{2}+\hat{q}_{m+2}^{2})
 \end{equation}
 \noindent and the corresponding left edge flux is similarly modified so that $q_{i}^{1}$ is finally modified as:
 \begin{equation}\label{fluxcorrect}
-q_{i}^{1} \rightarrow q_{i}^{1} + \frac{k}{h} ( \frac{1}{2}(\hat{F}_{m+1}^{0} - \hat{F}_{m+1}^{1}) - F_{i}^{0}) \, .
+q_{i}^{1} \rightarrow q_{i}^{1} + \frac{k}{h} ( \frac{1}{2}(\hat{F}_{m+1}^{0} + \hat{F}_{m+1}^{1}) - F_{i}^{0}) \, .
 \end{equation}
  
 
 
 
-%\begin{figure}[h]
-   % \centering
-    %\includegraphics[width=.65\textwidth]{berg-lev-fig21}
-   % \caption{Essential figure for flux adapting Cartesian grids. The top grid is the normal coarse grid we are used to using with fluxes indicated. The middle diagram shows the case where a fine grid overlays a coarse grid and the interface region of fine and coarse grids. Recall that $2\hat{h}=h$ and $2\hat{k}=k$. The bottom diagram depicts the ghost cell region imposed on the coarse cell interface as well as the fine grid fluxes needed to bridge the interface.}
-    %\label{fig21}
-%\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.65\textwidth]{berg-lev-fig21}
+   \caption{Essential figure for flux adapting Cartesian grids. The top grid is the normal coarse grid we are used to using with fluxes indicated. The middle diagram shows the case where a fine grid overlays a coarse grid and the interface region of fine and coarse grids. Recall that $2\hat{h}=h$ and $2\hat{k}=k$. The bottom diagram depicts the ghost cell region imposed on the coarse cell interface as well as the fine grid fluxes needed to bridge the interface.}
+    \label{fig21}
+\end{figure}
  
  
 \subsection{Updating grid interfaces with wave propagation}
