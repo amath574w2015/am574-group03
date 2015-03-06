@@ -144,19 +144,19 @@ The correction step extends to an arbitrary hyperbolic system where we use a Rie
 \noindent Steps for the AMR algorithm:
 \begin{enumerate}
 \item{initialize coarse grid}
+\item{solve Riemann on coarse grid}
 \item{error estimate and create fine grid (recursive step)}
 \begin{itemize}
 \item{cell flagging}
 \item{clustering}
 \item{generate grid for each cluster}
 \end{itemize}
-\item{solve Riemann on coarse grid}
 \item{solve Riemann on refined grid levels}
 \item{correction step to ensure conservation}
 \item{go to step {\it b} }
 \end{enumerate}
 
-Initially the when a cell is flagged for refinement is is subdivided statically into 4 equal parts for  the fine grid and there is no recursion in the region.
+\noindent Initially the when a cell is flagged for refinement is is subdivided statically into 4 equal parts for  the fine grid and there is no recursion in the region.
 
 
 
