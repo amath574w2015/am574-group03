@@ -76,15 +76,17 @@ Email:\texttt{kenneth.roche@pnnl.gov}}
 \section{Overview of Paper}
 An adaptive mesh refinement strategy that uses rectangular patches over Cartesian grids to refine both space and time coordinates is useful for modeling and tracking regions where the solutions are not smooth such as exhibited around shocks. 
 \subsection{Flux updates on refined and coarse meshes}
-The idea behind the refinement step comes from first determining where a refinement may be useful. See section \ref{whentorefine} for details.  
-We need to explain how to preserve conservation of flux at grid interfaces, Fig \ref{fig21}. There are essentially three cases to consider: coarse cell to coarse cell, fine cell to fine cell, and coarse cell to fine cell. Let $F_i$ be the flux at the left edge of coarse cell $i$. This is different than what we typically wrote in class, $F_{i-\frac{1}{2}}$, for convenience. Thus, updating between coarse grid cells is simply:
+The idea behind the refinement step comes from first determining where a refinement may be useful, see section \ref{whentorefine} for details.  
+Here we explain how to preserve conservation of flux at grid interfaces and refer to Fig \ref{fig21}. There are essentially three cases to consider: coarse cell to coarse cell, fine cell to fine cell, and coarse cell to fine cell. Let $F_i$ be the flux at the left edge of coarse cell $i$. This is different notation than what we typically wrote in class, $F_{i-\frac{1}{2}}$. 
+
+Updating between coarse grid cells is simply:
 \begin{equation}
 q_{i}^{1} = q_{i}^{0} - \frac{k}{h} (F_{i+1}^{0} - F_{i}^{0}) 
 \end{equation}
 \noindent where $h,k$ are the space and time lattice spacing respectively.
 
-In regions that contain $m$ adjacent single level refined cells let the lattice spacing be denoted by $\hat{h},\hat{k}$ respectively.
-We have $\forall i=1,m$
+In regions that contain $m$ adjacent single level refined cells let the lattice spacing be denoted by $\hat{h},\hat{k}$.
+We have, in the stated order, $\forall i=1,m$
 \begin{equation}
 \begin{array}{c}
 \hat{q}_{i}^{1} = \hat{q}_{i}^{0} - \frac{\hat{k}}{\hat{h}} (\hat{F}_{i+1}^{0} - \hat{F}_{i}^{0}) \\
@@ -127,7 +129,7 @@ However, the first-order upwind terms written in terms of the fluctuations must 
 To maintain conservation we must {\it first} solve the Riemann problem between the ghost cell value $\hat{q}_{m+1}^{0}$ on the fine grid and the coarse grid value $q_{j}^{0}$, and add to the coarse cell value $q_{j}^{1}$ the resulting total fluctuation $A^{-}\Delta q + A^{+}\Delta q$ weighted by $\hat{k}/h = 1/2$ since the time step is $\hat{k}$ while the cell size is $h$. 
 {\it Second} we must also solve a Riemann problem on the fine grid between $\hat{q}_{m+1}^{1}$ and $q_{j}^{0}$and add these fluctuations into $q_{j}^{1}$. 
 
-The correction step extends to an arbitrary hyperbolic system where we use a Riemann solver to obtain $A^{-}\Delta q$ and  $A^{+}\Delta q$ from the two states $\hat{q}_{m+1}^{0}$ and $q_{j}^{0}$.  This step is made in each of the $R$ time steps on the refined grid within the single coarse-grid step, where $R$ is the refinement ratio ($2X$ in our examples so far). \\
+The correction step extends to an arbitrary hyperbolic system where we use a Riemann solver to obtain $A^{-}\Delta q$ and  $A^{+}\Delta q$ from the two states $\hat{q}_{m+1}^{0}$ and $q_{j}^{0}$.  This step is made in each of the $R$ time steps on the refined grid within the single coarse-grid step, where $R$ is the refinement ratio. \\
 
 \noindent The fix-up algorithm:
 \begin{description}
@@ -142,15 +144,11 @@ The correction step extends to an arbitrary hyperbolic system where we use a Rie
 If the solution $q(x,t)$ is smooth enough, assume that our difference method $D$ has order of accuracy $s$ in both 
 space and time, then the local truncation error is $q(x,t+k) -D q(x,t) = \tau(x,t) + k O(k^{s+1}+h^{s+1}))$ where $\tau$ is the leading error.
 Taking two time steps suggests $q(x,t+2k) -D^2 q(x,t) = 2\tau(x,t) + k O(k^{s+1}+h^{s+1}))$.
-Now, suppose we consider coarsening our grid to have space and time widths $2h$, $2k$ respectively. Let the differencing scheme be called $D_{2h}$ in this case. The local truncation error in this case reads $q(x,t+2k) -D_{2h} q(x,t) = 2^{s+1}\tau(x,t) + O(h^{s+2})$. Thus, an error growth estimate at time $t$ can be formed by taking the difference in the error present taking two steps with the regular integration scheme, and a single large step using every other grid point:
-
-A similar modification must be made in each of the R time steps on the refined grid within the single coarse-grid step, where R is again the refinement ratio. The fix-up algorithm thus takes the form?for N = 0, 1, . . . , R ? 1 dosolve the Riemann problem with data qö and qto compute A?Æq and A+Æq, update q1 := q1 + kö (A?Æq + A+Æq).jjhFor the case of a conservation law, this will restore conservation, and, in fact, agreeswith the flux function modification (2.4) if numerical fluxes are defined by (3.9).Note that, in view of (3.8), in the conservation law case the coarse-grid value qj1 isN0simply updated by the entire flux difference f (qö ) ? f (q ), and we wouldnÕt needm+1 jto actually solve the Riemann problem. However, implementing it as presented abovegives a uniform and general formulation.
-
+Now, coarsen the grid to have space and time widths $2h$, $2k$ and let the differencing scheme be called $D_{2h}$ in this case. The local truncation error in this case reads $q(x,t+2k) -D_{2h} q(x,t) = 2^{s+1}\tau(x,t) + O(h^{s+2})$. Thus, an error growth estimate at time $t$ can be formed by taking the difference in the error taking two steps with the regular integration scheme, and a single large step using every other grid point:
 \begin{equation}
-\frac{D^2 q(x,t) - D_{2h} q(x,t)}{2^{s+1}-2} = \tau(x,t) + O(h^{s+2})
+\frac{D^2 q(x,t) - D_{2h} q(x,t)}{2^{s+1}-2} = \tau(x,t) + O(h^{s+2}) \, .
 \end{equation}
-
-Thus, the values on a grid at a given level are projected, i.e. Richardson extrapolation, onto a virtual grid coarsened by a factor of two in each direction. The solutions on both grids are advanced in time: the original grid for two time steps, the coarsened grid for one step using a time step twice as large. The difference between the solutions obtained on the two grids at each point is proportional to the local truncation error at that point. At coarse cells where the difference between the two sets of values exceed some tolerance, all four cells contained in the real grid are flagged as requiring refinement. One disadvantage of this procedure is that it always predicts a large error in the neighborhood of captured discontinuities. It is easy to construct examples for which the procedure outlined above will give values on the coarsened grid which differ pointwise by an amount independent of the mesh spacing in the neighborhood of a shock. See \cite{berg-coll} for more details. A buffer zone around the flagged cells is added to track features of interest in the refined region. This buffer zone must be affiliated with the number of time steps evaluated at a particular level. If a patch at level $L$ is refined by even integer $R_L$, then the time-step is equally refined implying that $R_L$ steps must be taken on the refined grid at level $L+1$ for each step on grid at level $L$. 
+The values on a grid at a given level are projected, i.e. Richardson extrapolation, onto a virtual grid coarsened by a factor of two in each direction. The solutions on both grids are advanced in time: the original grid for two time steps, the coarsened grid for one step using a time step twice as large. The difference between the solutions obtained on the two grids at each point is proportional to the local truncation error at that point. At coarse cells where the difference between the two sets of values exceed some tolerance, all four cells contained in the real grid are flagged as requiring refinement. One disadvantage of this procedure is that it always predicts a large error in the neighborhood of captured discontinuities. It is easy to construct examples for which the procedure outlined above will give values on the coarsened grid which differ pointwise by an amount independent of the mesh spacing in the neighborhood of a shock. See \cite{berg-coll} for more details. A buffer zone around the flagged cells is added to track features of interest in the refined region. This buffer zone must be affiliated with the number of time steps evaluated at a particular level. If a patch at level $L$ is refined by even integer $R_L$, then the time-step is equally refined implying that $R_L$ steps must be taken on the refined grid at level $L+1$ for each step on grid at level $L$. 
 
 \subsection{Note on boundary conditions}
 
