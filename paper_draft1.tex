@@ -132,7 +132,7 @@ The difference between the solutions obtained on the two grids at each point is 
 Once regions where a fine grid are determined, values must be assigned to the fine grid points. Space-time interpolation is needed to supply values for the fine grid because more time steps are taken on the fine grid  than the coarse grid and there are no coarse grid values available at intermediate times. 
 This is achieved through a linear interpolation step with known coarse grid values and these values are available since we advance the coarse grid first as stated in the algorithm.
 
-\subsection{Flux updates on refined and coarse meshes}
+\subsection{flux updates on refined and coarse meshes}
 After finishing the recursive step creating the fine grid structure, how to evolve the newly refined grid needs to be considered. To evolve, conservation of fluxes at grid interfaces is required. We refer to Fig \ref{fig21} for this discussion. There are essentially three cases to consider: coarse cell to coarse cell, fine cell to fine cell, and overlapping coarse cell and fine cell regions. Let $F_i$ be the flux at the left edge of coarse cell $i$. This is different notation than what we typically wrote in class, $F_{i-\frac{1}{2}}$. 
 \begin{figure}[h]
     \centering
