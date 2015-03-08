@@ -10,13 +10,8 @@
 \usepackage{epstopdf}
 %\usepackage{parskip}
 
-%\setlength{\textwidth}{6.2in}
-%\setlength{\oddsidemargin}{0.2in}
-%\setlength{\evensidemargin}{0in}
-%\setlength{\textheight}{8.9in}
-%\setlength{\voffset}{-1.0in}
 %\setlength{\parindent}{20pt}
-%\setlength{\parindent}{1cm}
+\setlength{\parindent}{1cm}
 \setlength{\textwidth}{6.2in}
 \setlength{\oddsidemargin}{0in}
 \setlength{\evensidemargin}{0in}
@@ -46,8 +41,11 @@
 \newcommand{\ol}{\overline}
 \newcommand{\ft}{\widehat}
 \newcommand{\mb}{\mathbb}
+\newcommand{\mc}{\mathcal}
 
-%\setlength{\parskip}{2mm}
+\newcommand{\reals}{\mathbb{R}}
+
+\setlength{\parskip}{2mm}
 \renewcommand{\theenumi}{\alph{enumi}}
 \renewcommand{\labelenumi}{(\theenumi)}
 
@@ -79,43 +77,50 @@ Email:\texttt{kenneth.roche@pnnl.gov}}
 \listoftables
 \newpage
 
-\section{Overview of Paper}
-An adaptive mesh refinement strategy that uses rectangular patches over Cartesian grids to refine both space and time coordinates is useful for modeling and tracking regions where the solutions are not smooth such as exhibited around shocks. We present an AMR algorithm in the next section, and provide details in subsequent sections for the various steps. 
+\section{Introduction}
+We describe an adaptive mesh refinement (AMR) strategy for the solution of hyperbolic systems of conservation laws. The solutions of these equations are often smooth and easily approximated over large portions of their domain, but contain locally isolated regions with steep gradients, shocks or discontinuities. 
+Our AMR strategy models and tracks such regions, by using rectangular patches over Cartesian grids to refine both the space and time coordinates. 
 
-\section{Pseudo-code for AMR}
-\noindent Steps for the AMR algorithm:
-\begin{enumerate}
-\item{initialize coarse grid}
-\item{evolve time on coarse grid}
-\item{{\it recurse}: estimate error, create fine grid}
-\begin{itemize}
-\item{cell flagging}
-\item{clustering}
-\item{fine grid generation}
-\end{itemize}
-\item{solve Riemann on refined grid levels}
-\item{correction step to ensure conservation}
-\item{go to step {\it b} }
-\end{enumerate}
+\section{The AMR algorithm}
+\noindent
+In this paper, we consider only one-dimensional systems. The coarse grid consists of a collection of intervals or cells that cover the entire domain, while refinements cover a subset of the domain and have finer cell-widths. If the cell-width in a fine grid is refined by an even integer $R_L$, then the time-step is also refined by the same factor, so that the ratio $\Delta t/\Delta x$ remains unchanged and for every single time-step on the coarse grid, $R_L$ time steps must be taken on the fine grid.  
 
-\subsection{wave propagation algorithm to evolve time}
-After initializing the discrete coarse grid, a standard high resolution wave propagation including limiter corrections to evolve our Riemann problem is employed. The method reads,  i.e. for the {\it color} eqn (see \ref{color}):
-\begin{equation} \label{hires}
- q_{i}^{n+1} = q_{i}^{n} - \frac{k}{h}(u_{i}^{+}(q_{i}^{n}-q_{i-1}^{n})+u_{i}^{-}(q_{i+1}^{n}-q_{i}^{n})) - \frac{k}{h}(\tilde{F_{i+1}} - \tilde{F_{i}})
- \end{equation}
- \noindent where 
- \begin{equation}
-\tilde{F_{i}} = \frac{1}{2}\vert u_i \vert (1- \frac{k}{h}\vert u_i \vert) \tilde{W_i}
- \end{equation}
- \noindent and the limiter is applied to wave $W_i = q_i - q_{i-1}$ i.e. traveling at speed $u(x)$, such that
-\begin{equation}
- \tilde{W_i} =
-  \left\{ \begin{array}{c}
-limiter(W_i , W_{i-1}) , \, \, \, \, u_i > 0\\
-limiter(W_i , W_{i+1}) , \, \, \, \, u_i < 0\end{array}\right 
-\end{equation}
-Clearly, when $\tilde{W_i} = W_i$ the method is reduced to upwind + second order correction, i.e. Lax-Wendroff method. 
-On notation: $h,k$ are mesh spaces for the coarse coordinate and time grids respectively, and $u^+ (x) = max(u(x),0)$ and $u^- (x)=min(u(x),0)$ at $x$.
+An error estimation procedure based on Richardson extrapolation, described in more detail in section \ref{whentorefine}, is used to flag the cells which need refinement. Flagged cells are clustered into patches, and a fine grid is generated for each patch (including a buffer zone). A finite volume method in wave-propagation form is used to advance the solution on the coarse grid over a single time-step, and then the solution on the fine grid(s) is advanced over $R_L$ time steps to catch-up. 
+
+Every $K$ time steps, the fine grids are regenerated, and the error estimation procedure is re-applied to capture the movement of the discontinuities. The refinement and solution process is repeated. 
+
+Each of the above steps is described in more detail below.
+
+\subsection{Advance solution over coarse grid}
+After initializing the discrete coarse grid, the first step is to advance the solution over a single time-step on the coarse grid. A standard high resolution wave propagation method (with limiter corrections) is used to solve the Riemann problem. 
+
+Consider a linear system
+\[
+q_t + A(x) q_x = 0,
+\]
+where $q \in \reals^m$ and $A \in \reals^{m \times m}$ is diagonalizable with real eigenvalues. On the cell $[x_{i-1/2},x_{i+1/2}$, the matrix $A(x)$ is approximated by a matrix $A_{i-1}$ with eigenvalues $\lambda^1_{i-1}, \ldots, \lambda^m_{i-1}$. Then for the Riemann problem at $x_{i-1/2}$, we decompose $q_i - q_{i-1}$ into waves $\mc{W}^p_{i}, p = 1,2,\ldots,m$ in such a way that the left-going waves are eigenvectors of the matrix $A_{i-1}$, traveling with speeds $\lambda^p_{i-1} <0$, while the right-going waves are eigenvectors of $A_i$ traveling with speeds $\lambda^p_i>0$. The update formula is then
+\beq \label{waveprop}
+q_i^{n+1} = q_i^n - \frac{k}{h}
+\sum\limits_{p=1}^m \left[ (\lambda_i^p)^+ \mc{W}_i^p + (\lambda_{i+1}^p)^- \mc{W}_{i+1}^p\right]
+- \frac{k}{h} \left( \tilde{F}_{i+1} - \tilde{F}_i \right)
+\eeq
+where $k$ is the length of the time-step and $h$ is the cell-width in the spatial grid, and for any real number $a$, $a^+ = \max\{a,0\}$ and $a^- = \max\{-a,0\}$.
+
+The summation term gives the first-order upwind method, while the fluxes $\tilde{F}_i$ are the second-order corrections defined by
+\beq
+\tilde{F}_i = \frac{1}{2} \sum\limits_{p=1}^m
+\left| \lambda_i^p\right| \left( 1-\frac{k}{h} \left| \lambda_i^p\right| \right) \tilde{\mc{W}}_{i+1}
+\eeq
+where $\tilde{W}_{i+1}^p$ is some limited version of the wave $\mc{W}_i^p$.
+When $\tilde{W_i} = W_i$, the method is reduced to upwind + second order correction, i.e. Lax-Wendroff method. 
+
+This method is extended to nonlinear systems using the Roe approximate Riemann solver, which linearizes the problem at each cell-interface in such a way that conservation is guaranteed. This method is symbolically written as
+\begin{equation*}
+q_i^{n+1} = q_i^n - \frac{k}{h}
+\sum\limits_{p=1}^m \left[ \mc{A}^+\Delta(q_{i}) + \mc{A}^-\Delta(q_{i+1})\right]
+- \frac{k}{h} \left( \tilde{F}_{i+1} - \tilde{F}_i \right)
+\end{equation*}
+where $\mc{A}^+\Delta(q_{i})$ represents the right-going fluctuation from the left interface of cell $i$, while $\mc{A}^-\Delta(q_{i})$ is the left-going fluctuation from the right interface of cell $i$.
 
 \subsection{determining refinement - error estimation}\label{whentorefine}
 The idea behind the refinement step comes from first determining where a refinement may be useful.  
@@ -193,6 +198,22 @@ The correction step extends to an arbitrary hyperbolic system (i.e. see \ref{lin
 
 \subsection{Note on boundary conditions}
 
+
+ Steps for the AMR algorithm:
+\begin{enumerate}
+\item{initialize coarse grid}
+\item{evolve time on coarse grid}
+\item{{\it recurse}: estimate error, create fine grid}
+\begin{itemize}
+\item{cell flagging}
+\item{clustering}
+\item{fine grid generation}
+\end{itemize}
+\item{solve Riemann on refined grid levels}
+\item{correction step to ensure conservation}
+\item{go to step {\it b} }
+\end{enumerate}
+
 \section{Examples of 1D AMR}
 \subsection{variable coefficient}\label{color}
 Here we state a 1D scalar problem based on a variable coefficient velocity term.The {\it color} equation is the problem formed by solving the following Riemann problem at the interface $x_{i-\frac{1}{2}}$ between cells $i-1$ and $i$:
@@ -200,18 +221,36 @@ Here we state a 1D scalar problem based on a variable coefficient velocity term.
 \begin{equation}
  q(x,t)_{t} + u(x) q(x,t)_{x}=0
  \end{equation}
+ 
+ 
+ The method reads,  i.e. for the {\it color} eqn (see \ref{color}):
+\begin{equation} \label{hires}
+ q_{i}^{n+1} = q_{i}^{n} - \frac{k}{h}(u_{i}^{+}(q_{i}^{n}-q_{i-1}^{n})+u_{i}^{-}(q_{i+1}^{n}-q_{i}^{n})) - \frac{k}{h}(\tilde{F_{i+1}} - \tilde{F_{i}})
+ \end{equation}
+ \noindent where 
+ \begin{equation}
+\tilde{F_{i}} = \frac{1}{2}\vert u_i \vert (1- \frac{k}{h}\vert u_i \vert) \tilde{W_i}
+ \end{equation}
+ \noindent and the limiter is applied to wave $W_i = q_i - q_{i-1}$ i.e. traveling at speed $u(x)$, such that
+\begin{equation}
+ \tilde{W_i} =
+  \left\{ \begin{array}{c}
+limiter(W_i , W_{i-1}) , \, \, \, \, u_i > 0\\
+limiter(W_i , W_{i+1}) , \, \, \, \, u_i < 0\end{array}\right. 
+\end{equation}
+
 
 \begin{equation}
 q(x,0):= \phi(x)=
 \left\{ \begin{array}{c}
 q_{i-1} , \, \, \, \, x<x_{i-\frac{1}{2}}\\
-q_{i} , \, \, \, \, x>x_{i-\frac{1}{2}}\end{array}\right
+q_{i} , \, \, \, \, x>x_{i-\frac{1}{2}}\end{array}\right.
  \quad 
 ,
 \quad u(x)=
  \left\{ \begin{array}{c}
 u_{i-1} , \, \, \, \, x<x_{i-\frac{1}{2}}\\
-u_{i} , \, \, \, \, x>x_{i-\frac{1}{2}}\end{array}\right 
+u_{i} , \, \, \, \, x>x_{i-\frac{1}{2}}\end{array}\right. 
 \end{equation}
 \noindent and the sign of $u(x)$ arbitrary for now.
 
